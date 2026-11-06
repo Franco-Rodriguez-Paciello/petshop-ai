@@ -1,0 +1,45 @@
+# Ollama corre en el host (Windows + GPU) y los contenedores lo ven en host.docker.internal.
+# Para correrlo también en Docker: docker compose --profile ollama up
+name: petshop-ai
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: petshop
+      POSTGRES_PASSWORD: petshop
+      POSTGRES_DB: petshop
+    ports: ["5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U petshop"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: { context: ., dockerfile: dotnet/src/PetShop.Api/Dockerfile }
+    environment:
+      ConnectionStrings__PetShop: Host=postgres;Database=petshop;Username=petshop;Password=petshop
+      Internal__ApiKey: ${INTERNAL_API_KEY:-dev-internal-key}
+      Jwt__Key: ${JWT_KEY:-dev-only-signing-key-change-me-0123456789abcdef}
+      AiService__BaseUrl: http://ai-service:8000
+      TZ: America/Argentina/Buenos_Aires
+    ports: ["8080:8080"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ollama"]
+    ports: ["11434:11434"]
+    volumes: ["ollama:/root/.ollama"]
+    deploy:
+      resources:
+        reservations:
+          devices: [{ driver: nvidia, count: all, capabilities: [gpu] }]
+
+volumes:
+  pgdata:
+  ollama:
