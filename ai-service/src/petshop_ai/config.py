@@ -1,5 +1,6 @@
 # config.py — configuración tipada (equivale a IOptions<T> + appsettings en .NET)
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -23,6 +24,16 @@ class Settings(BaseSettings):
 
     petshop_db: str = "petshop.db"
     internal_api_key: str = "dev-internal-key"
+
+    # RAG
+    knowledge_db_url: str = "postgresql://petshop:petshop@localhost:5433/knowledge"
+    data_dir: Path = Path(__file__).resolve().parents[3] / "data"
+    embedding_model: str = "bge-m3"
+    embedding_dim: int = 1024
+    reranker: str = "bge"  # bge | none
+    reranker_model: str = "BAAI/bge-reranker-v2-m3-int8"
+    rag_modo: str = "hibrido+rerank"  # vectorial | lexico | hibrido | hibrido+rerank
+    rag_k: int = 5
 
 
 @lru_cache

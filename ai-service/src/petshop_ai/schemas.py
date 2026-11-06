@@ -20,6 +20,7 @@ class AccionPendiente(BaseModel):
 class ChatResponse(BaseModel):
     session_id: str
     respuesta: str
+    fuentes: list[str] = []
     acciones_pendientes: list[AccionPendiente] = []
 
 

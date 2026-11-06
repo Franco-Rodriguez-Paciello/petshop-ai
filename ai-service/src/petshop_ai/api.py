@@ -1,4 +1,5 @@
 # api.py — API HTTP del servicio de IA (equivale a una Minimal API de ASP.NET Core)
+import re
 import uuid
 from typing import Annotated
 
@@ -33,6 +34,14 @@ def cliente_autenticado(
 
 ClienteId = Annotated[str, Depends(cliente_autenticado)]
 
+_CITA = re.compile(r"\[([\w:#-]+)\]")
+
+
+def fuentes_citadas(respuesta: str, recuperadas: list[str]) -> list[str]:
+    """Solo cuenta como fuente lo que el modelo citó Y fue realmente recuperado (descarta citas inventadas)."""
+    validas = set(recuperadas)
+    return list(dict.fromkeys(c for c in _CITA.findall(respuesta) if c in validas))
+
 
 @app.get("/health")
 def health() -> dict:
@@ -49,10 +58,13 @@ def chat(req: ChatRequest, cliente_id: ClienteId) -> ChatResponse:
         agente = crear_agente()
         _sesiones[session_id] = (cliente_id, agente)
 
-    resultado = agente(req.mensaje, invocation_state={"cliente_id": cliente_id})
+    recuperadas: list[str] = []
+    resultado = agente(req.mensaje, invocation_state={"cliente_id": cliente_id, "fuentes": recuperadas})
+    respuesta = str(resultado).strip()
     return ChatResponse(
         session_id=session_id,
-        respuesta=str(resultado).strip(),
+        respuesta=respuesta,
+        fuentes=fuentes_citadas(respuesta, recuperadas),
         acciones_pendientes=[AccionPendiente(**a) for a in servicios.acciones_pendientes(cliente_id)],
     )
 

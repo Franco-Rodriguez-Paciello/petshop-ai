@@ -75,4 +75,25 @@ def solicitar_devolucion(pedido_id: int, tool_context: ToolContext) -> str:
     )
 
 
-TODAS = [listar_productos, consultar_producto, mis_pedidos, solicitar_devolucion]
+@tool(context=True)
+def buscar_informacion(consulta: str, tool_context: ToolContext, especie: str | None = None) -> str:
+    """Busca en las guías de cuidado de mascotas, las políticas de la tienda (envíos, devoluciones, turnos)
+    y el catálogo de productos. Úsala para cualquier pregunta sobre cuidados, alimentación, salud preventiva,
+    políticas o para encontrar productos adecuados.
+
+    Args:
+        consulta: La pregunta del cliente reformulada como búsqueda, p. ej. "alimento para gato castrado"
+        especie: Opcional. Filtra por especie: perro, gato, ave, pez, roedor o reptil
+    """
+    from petshop_ai.config import get_settings
+    from petshop_ai.rag.retriever import get_retriever
+
+    s = get_settings()
+    resultados = get_retriever().buscar(consulta, k=s.rag_k, especie=especie, modo=s.rag_modo)
+    if not resultados:
+        return "No encontré información sobre eso en la base de conocimiento de la tienda."
+    tool_context.invocation_state.setdefault("fuentes", []).extend(r.chunk_id for r in resultados)
+    return "\n\n".join(f"[{r.chunk_id}] {r.titulo} > {r.seccion}\n{r.contenido}" for r in resultados)
+
+
+TODAS = [listar_productos, consultar_producto, mis_pedidos, solicitar_devolucion, buscar_informacion]

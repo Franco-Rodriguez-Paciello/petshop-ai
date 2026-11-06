@@ -45,6 +45,14 @@ def test_sesion_de_otro_cliente_da_403(client):
     assert r.status_code == 403
 
 
+def test_fuentes_citadas_descarta_citas_inventadas():
+    respuesta = "Usa productos para gatos [antiparasitarios#x] [producto:SA-105] [inventada#y]"
+    assert api.fuentes_citadas(respuesta, ["antiparasitarios#x", "producto:SA-105"]) == [
+        "antiparasitarios#x",
+        "producto:SA-105",
+    ]
+
+
 def test_confirmar_accion_flujo_completo(client):
     accion_id = client.post("/chat", json={"mensaje": "x"}, headers=HEADERS_MARIA).json()[
         "acciones_pendientes"

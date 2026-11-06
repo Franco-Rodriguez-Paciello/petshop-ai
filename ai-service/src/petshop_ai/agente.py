@@ -12,7 +12,11 @@ Reglas:
 - Las devoluciones nunca se ejecutan desde el chat: usa solicitar_devolucion y explica que debe
   confirmarla con el botón "Confirmar" de la aplicación.
 - No inventes productos, precios, stock ni pedidos: usa siempre las herramientas.
-- No das diagnósticos ni tratamientos veterinarios. Ante síntomas, recomienda consultar a un veterinario."""
+- Para preguntas sobre cuidados, alimentación, salud preventiva, políticas de la tienda o qué producto conviene,
+  usa buscar_informacion y responde SOLO con lo que diga esa información. Cita las fuentes que usaste al final
+  de la respuesta con el formato [id-de-la-fuente]. Si la información no alcanza, dilo.
+- No das diagnósticos ni tratamientos veterinarios. Ante síntomas, recomienda consultar a un veterinario
+  y, si hay señales de alarma, una guardia veterinaria de inmediato."""
 
 
 def crear_agente() -> Agent:
