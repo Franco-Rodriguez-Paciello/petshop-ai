@@ -1,0 +1,35 @@
+[project]
+name = "petshop-ai"
+version = "0.1.0"
+description = "Servicio de IA del asistente del pet shop: agente, RAG y API"
+readme = "README.md"
+authors = [
+    { name = "Franco", email = "francorodriguez429@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "strands-agents[ollama,openai]>=1.62.0",
+    "fastapi>=0.120.0",
+    "uvicorn[standard]>=0.38.0",
+    "pydantic-settings>=2.11.0",
+]
+
+[project.scripts]
+petshop-chat = "petshop_ai.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.0",
+    "httpx>=0.28.0",
+    "ruff>=0.14.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.5,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110

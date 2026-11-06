@@ -1,0 +1,18 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.db
+
+# .NET
+bin/
+obj/
+*.user
+.vs/
+
+# Entorno y resultados locales
+.env
+evals/results/*.json
+!evals/results/.gitkeep
