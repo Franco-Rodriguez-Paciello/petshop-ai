@@ -1,5 +1,7 @@
 # PetShop AI
 
+[![CI](https://github.com/Franco-Rodriguez-Paciello/petshop-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Franco-Rodriguez-Paciello/petshop-ai/actions/workflows/ci.yml)
+
 A production-minded AI assistant for a pet store: a **.NET 10 API** that owns the business and the user identity, and a **Python agent service** (Strands Agents + FastAPI) with **hybrid RAG**, tool calling and **human-in-the-loop** for any action that changes data.
 
 The goal of the project is not the chatbot itself but the engineering around it: authorization boundaries the model cannot cross, retrieval that is measured instead of assumed, and an evaluation set that includes prompt-injection attacks.
@@ -122,6 +124,7 @@ Done:
 - [x] .NET API with JWT, internal endpoints, domain rules and integration tests
 - [x] Hybrid RAG with reranking and verified citations
 - [x] Golden set and retrieval evaluation
+- [x] CI on GitHub Actions: Python lint + tests and .NET tests with a real Postgres (Testcontainers)
 
 Next:
 
