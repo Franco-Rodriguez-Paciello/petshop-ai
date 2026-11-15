@@ -1236,6 +1236,7 @@ dependencies = [
 dev = [
     { name = "httpx" },
     { name = "pytest" },
+    { name = "pyyaml" },
     { name = "ruff" },
 ]
 
@@ -1254,6 +1255,7 @@ requires-dist = [
 dev = [
     { name = "httpx", specifier = ">=0.28.0" },
     { name = "pytest", specifier = ">=8.4.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
     { name = "ruff", specifier = ">=0.14.0" },
 ]
 
